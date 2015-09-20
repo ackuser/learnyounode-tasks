@@ -2,12 +2,10 @@ var fs = require('fs')
 var path = require('path')
 
 module.exports = function (callback) {
-  var myArgs = process.argv.slice(2);
-  //console.log('myArgs: ', myArgs);
   fs.readdir(process.argv[2], function (err, list) {
-  if (myArgs.length != 2) throw 'Worng arguments!!!';
-    //if (err)
-      //return callback(err) // early return
+  //console.log(process.argv.length != 4);
+  if (process.argv.length != 4 || err) return callback(new Error('Errors'));
+  //console.log('HOLA');
     list.forEach(function (file) {
       if (path.extname(file) === '.' + process.argv[3])
         console.log(file)
