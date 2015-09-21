@@ -1,16 +1,18 @@
 var fs = require('fs')
 var path = require('path')
 
-module.exports = function (callback) {
-  fs.readdir(process.argv[2], function (err, list) {
-  //console.log(process.argv.length != 4);
-  if (process.argv.length != 4 || err) return callback(new Error('Errors'));
-  //console.log('HOLA');
+module.exports = function (arg1,arg2,callback) {
+  fs.readdir(arg1, function (err, list) {
+  var data = [];
+  if (err) return callback(err);
+  //console.log(arg2);
     list.forEach(function (file) {
-      if (path.extname(file) === '.' + process.argv[3])
-        console.log(file)
-    })
-    callback(err, list);
+      if (path.extname(file) === '.' + arg2){
+        data.push(file);
+        //console.log(data);
+      }
+    });
+    callback(null, data);
   });
 };
 
