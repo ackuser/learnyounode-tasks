@@ -1,28 +1,31 @@
 LEARN YOU THE NODE.JS FOR MUCH WIN!
 ─────────────────────────────────────
-BABY STEPS
-Exercise 2 of 13
+HTTP CLIENT
+Exercise 7 of 13
 
-Write a program that accepts one or more numbers as command-line arguments and prints the sum of those numbers to the console (stdout).
+Write a program that performs an HTTP GET request to a URL provided to you as the first command-line argument. Write the String contents of each "data" event from the response to a new line on the console (stdout).
 
 -------------------------------------------------------------------------------
 
 ## HINTS
 
-You can access command-line arguments via the global process object. The process object has an argv property which is an array containing the complete command-line. i.e. process.argv.
+For this exercise you will need to use the http core module.
 
-To get started, write a program that simply contains:
+Documentation on the http module can be found by pointing your browser here:
+ file:///usr/local/lib/node_modules/learnyounode/node_apidoc/http.html
 
-   console.log(process.argv)
+The http.get() method is a shortcut for simple GET requests, use it to simplify your solution. The first argument to http.get() can be the URL you want to GET; provide a callback as the second argument.
 
-Run it with node program.js and some numbers as arguments. e.g:
+Unlike other callback functions, this one has the signature:
 
-   $ node program.js 1 2 3
+   function callback (response) { /* ... */ }
 
-In which case the output would be an array looking something like:
+Where the response object is a Node Stream object. You can treat Node Streams as objects that emit events. The three events that are of most interest are: "data", "error" and "end". You listen to an event like so:
 
-   [ 'node', '/path/to/your/program.js', '1', '2', '3' ]
+   response.on("data", function (data) { /* ... */ })
 
-You'll need to think about how to loop through the number arguments so  you can output just their sum. The first element of the process.argv array is always 'node', and the second element is always the path to your program.js file, so you need to start at the 3rd element (index 2), adding each item to the total until you reach the end of the array.
+The "data" event is emitted when a chunk of data is available and can be processed. The size of the chunk depends upon the underlying data source.
 
-Also be aware that all elements of process.argv are strings and you may need to coerce them into numbers. You can do this by prefixing the property with + or passing it to Number(). e.g. +process.argv[2] or Number(process.argv[2]).
+The response object / Stream that you get from http.get() also has a setEncoding() method. If you call this method with "utf8", the "data" events will emit Strings rather than the standard Node Buffer objects which you have to explicitly convert to Strings.
+
+-------------------------------------------------------------------------------

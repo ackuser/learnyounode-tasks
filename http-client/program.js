@@ -1,7 +1,23 @@
-//console.log(process.argv);
-//console.log(process.argv.length);
-var total=0;
-for (i=2;i<process.argv.length;i++){
-  total+=Number(process.argv[i]);
-}
-  console.log(total);
+var http = require('http')
+var url = require('url')
+//console.log(url.parse(process.argv[2]).port)
+//console.log(process.argv[2]);
+http.get({
+        host: url.parse(process.argv[2]).hostname,
+        port: url.parse(process.argv[2]).port
+        //path: '/email'
+    }, function(res) {
+  res.setEncoding('utf8');
+
+  var data = "";
+  res.on('data', function (chunk) {
+    data = chunk;
+    console.log(data);
+  });
+  res.on("end", function () {
+    //console.log(data);
+  });
+  //console.log("Got response: " + res.statusCode);
+}).on('error', function(e) {
+  console.log("Got error: " + e.message);
+});
