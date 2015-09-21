@@ -1,7 +1,12 @@
-//console.log(process.argv);
-//console.log(process.argv.length);
-var total=0;
-for (i=2;i<process.argv.length;i++){
-  total+=Number(process.argv[i]);
-}
-  console.log(total);
+var http = require('http')
+//var concat = require('concat-stream')
+const BufferList = require('bl')
+
+
+http.get(process.argv[2], function (response) {
+  response.pipe(BufferList(function(err,data){
+       content = data.toString();
+       console.log(content.length);
+       console.log(content);
+    }));
+});
