@@ -1,28 +1,20 @@
-LEARN YOU THE NODE.JS FOR MUCH WIN!
+ LEARN YOU THE NODE.JS FOR MUCH WIN!
 ─────────────────────────────────────
-BABY STEPS
-Exercise 2 of 13
+ JUGGLING ASYNC
+ Exercise 9 of 13
 
-Write a program that accepts one or more numbers as command-line arguments and prints the sum of those numbers to the console (stdout).
+This problem is the same as the previous problem (HTTP COLLECT) in that you need to use http.get(). However, this time you will be provided with three URLs as the first three command-line arguments.
+
+You must collect the complete content provided to you by each of the URLs and print it to the console (stdout). You don't need to print out the length, just the data as a String; one line per URL. The catch is that you must print them out in the same order as the URLs are provided to you as command-line arguments.
 
 -------------------------------------------------------------------------------
 
 ## HINTS
 
-You can access command-line arguments via the global process object. The process object has an argv property which is an array containing the complete command-line. i.e. process.argv.
+Don't expect these three servers to play nicely! They are not going to give you complete responses in the order you hope, so you can't naively just print the output as you get it because they will be out of order.
 
-To get started, write a program that simply contains:
+You will need to queue the results and keep track of how many of the URLs have returned their entire contents. Only once you have them all, you can print the data to the console.
 
-   console.log(process.argv)
+Counting callbacks is one of the fundamental ways of managing async in Node. Rather than doing it yourself, you may find it more convenient to rely on a third-party library such as [async](http://npm.im/async) or [after](http://npm.im/after). But for this exercise, try and do it without any external helper library.
 
-Run it with node program.js and some numbers as arguments. e.g:
-
-   $ node program.js 1 2 3
-
-In which case the output would be an array looking something like:
-
-   [ 'node', '/path/to/your/program.js', '1', '2', '3' ]
-
-You'll need to think about how to loop through the number arguments so  you can output just their sum. The first element of the process.argv array is always 'node', and the second element is always the path to your program.js file, so you need to start at the 3rd element (index 2), adding each item to the total until you reach the end of the array.
-
-Also be aware that all elements of process.argv are strings and you may need to coerce them into numbers. You can do this by prefixing the property with + or passing it to Number(). e.g. +process.argv[2] or Number(process.argv[2]).
+-------------------------------------------------------------------------------
