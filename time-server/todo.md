@@ -1,28 +1,56 @@
 LEARN YOU THE NODE.JS FOR MUCH WIN!
 ─────────────────────────────────────
-BABY STEPS
-Exercise 2 of 13
+TIME SERVER
+Exercise 10 of 13
 
-Write a program that accepts one or more numbers as command-line arguments and prints the sum of those numbers to the console (stdout).
+Write a TCP time server!
+
+Your server should listen to TCP connections on the port provided by the first argument to your program. For each connection you must write the current date & 24 hour time in the format:
+
+   "YYYY-MM-DD hh:mm"
+
+followed by a newline character. Month, day, hour and minute must be zero-filled to 2 integers. For example:
+
+   "2013-07-06 17:42"
 
 -------------------------------------------------------------------------------
 
 ## HINTS
 
-You can access command-line arguments via the global process object. The process object has an argv property which is an array containing the complete command-line. i.e. process.argv.
+For this exercise we'll be creating a raw TCP server. There's no HTTP involved here so we need to use the net module from Node core which has all the basic networking functions.
 
-To get started, write a program that simply contains:
+The net module has a method named net.createServer() that takes a callback function. Unlike most callbacks in Node, the callback used by createServer() is called more than once. Every connection received by your server triggers another call to the callback. The callback function has the signature:
 
-   console.log(process.argv)
+   function callback (socket) { /* ... */ }
 
-Run it with node program.js and some numbers as arguments. e.g:
+net.createServer() also returns an instance of your server. You must call server.listen(portNumber) to start listening on a particular port.
 
-   $ node program.js 1 2 3
+A typical Node TCP server looks like this:
 
-In which case the output would be an array looking something like:
+   var net = require('net')
+   var server = net.createServer(function (socket) {
+     // socket handling logic
+   })
+   server.listen(8000)
 
-   [ 'node', '/path/to/your/program.js', '1', '2', '3' ]
+Remember to use the port number supplied to you as the first command-line argument.
 
-You'll need to think about how to loop through the number arguments so  you can output just their sum. The first element of the process.argv array is always 'node', and the second element is always the path to your program.js file, so you need to start at the 3rd element (index 2), adding each item to the total until you reach the end of the array.
+The socket object contains a lot of meta-data regarding the connection, but it is also a Node duplex Stream, in that it can be both read from, and written to. For this exercise we only need to write data and then close the socket.
 
-Also be aware that all elements of process.argv are strings and you may need to coerce them into numbers. You can do this by prefixing the property with + or passing it to Number(). e.g. +process.argv[2] or Number(process.argv[2]).
+Use socket.write(data) to write data to the socket and socket.end() to close the socket. Alternatively, the .end() method also takes a data object so you can simplify to just: socket.end(data).
+
+Documentation on the net module can be found by pointing your browser here:
+
+ file:///usr/local/lib/node_modules/learnyounode/node_apidoc/net.html
+
+To create the date, you'll need to create a custom format from a new Date() object. The methods that will be useful are:
+
+   date.getFullYear()
+   date.getMonth()     // starts at 0
+   date.getDate()      // returns the day of month
+   date.getHours()
+   date.getMinutes()
+
+Or, if you want to be adventurous, use the strftime package from npm. The strftime(fmt, date) function takes date formats just like the unix date command. You can read more about strftime at: [https://github.com/samsonjs/strftime](https://github.com/samsonjs/strftime)
+
+-------------------------------------------------------------------------------
