@@ -1,51 +1,50 @@
 LEARN YOU THE NODE.JS FOR MUCH WIN!
 ─────────────────────────────────────
-HTTP COLLECT
-Exercise 8 of 13
+HTTP JSON API SERVER
+Exercise 13 of 13
 
-Write a program that performs an HTTP GET request to a URL provided to you as the first command-line argument. Collect all data from the server (not just the first "data" event) and then write two lines to the console (stdout).
+Write an HTTP server that serves JSON data when it receives a GET request to the path '/api/parsetime'. Expect the request to contain a query string with a key 'iso' and an ISO-format time as the value.
 
-The first line you write should just be an integer representing the number of characters received from the server. The second line should contain the complete String of characters sent by the server.
+For example:
+
+ /api/parsetime?iso=2013-08-10T12:10:15.474Z
+
+The JSON response should contain only 'hour', 'minute' and 'second' properties. For example:
+
+   {
+     "hour": 14,
+     "minute": 23,
+     "second": 15
+   }
+
+Add second endpoint for the path '/api/unixtime' which accepts the same query string but returns UNIX epoch time in milliseconds (the number of milliseconds since 1 Jan 1970 00:00:00 UTC) under the property 'unixtime'. For example:
+
+   { "unixtime": 1376136615474 }
+
+Your server should listen on the port provided by the first argument to your program.
 
 -------------------------------------------------------------------------------
 
 ## HINTS
 
-There are two approaches you can take to this problem:
+The request object from an HTTP server has a url property that you will need to use to "route" your requests for the two endpoints.
 
-1) Collect data across multiple "data" events and append the results together prior to printing the output. Use the "end" event to determine when the stream is finished and you can write the output.
+You can parse the URL and query string using the Node core 'url' module. url.parse(request.url, true) will parse content of request.url and provide you with an object with helpful properties.
 
-2) Use a third-party package to abstract the difficulties involved in collecting an entire stream of data. Two different packages provide a useful API for solving this problem (there are likely more!): bl (Buffer List) and concat-stream; take your pick!
+For example, on the command prompt, type:
 
- <http://npm.im/bl>
- <http://npm.im/concat-stream>
+   $ node -pe "require('url').parse('/test?q=1', true)"
 
-To install a Node package, use the Node Package Manager npm. Simply type:
+Documentation on the url module can be found by pointing your browser here:
+ file:///usr/local/lib/node_modules/learnyounode/node_apidoc/url.html
 
-   $ npm install bl
+Your response should be in a JSON string format. Look at JSON.stringify() for more information.
 
-And it will download and install the latest version of the package into a subdirectory named node_modules. Any package in this subdirectory under your main program file can be loaded with the require syntax without being prefixed by './':
+You should also be a good web citizen and set the Content-Type properly:
 
-   var bl = require('bl')
+   res.writeHead(200, { 'Content-Type': 'application/json' })
 
-Node will first look in the core modules and then in the node_modules directory where the package is located.
-
-If you don't have an Internet connection, simply make a node_modules directory and copy the entire directory for the package you want to use from inside the learnyounode installation directory:
-
- file:///usr/local/lib/node_modules/learnyounode/node_modules/bl
- file:///usr/local/lib/node_modules/learnyounode/node_modules/concat-stream
-
-Both bl and concat-stream can have a stream piped in to them and they will collect the data for you. Once the stream has ended, a callback will be fired with the data:
-
-   response.pipe(bl(function (err, data) { /* ... */ }))
-   // or
-   response.pipe(concatStream(function (data) { /* ... */ }))
-
-Note that you will probably need to data.toString() to convert from a Buffer.
-
-Documentation for both of these modules has been installed along with learnyounode on your system and you can read them by pointing your browser here:
-
- file:///usr/local/lib/node_modules/learnyounode/docs/bl.html
- file:///usr/local/lib/node_modules/learnyounode/docs/concat-stream.html
+The JavaScript Date object can print dates in ISO format, e.g. new Date().toISOString(). It can also parse this format if you pass the string into the Date constructor. Date#getTime() will also
+come in handy.
 
 -------------------------------------------------------------------------------
