@@ -1,28 +1,41 @@
 LEARN YOU THE NODE.JS FOR MUCH WIN!
 ─────────────────────────────────────
-BABY STEPS
-Exercise 2 of 13
+HTTP FILE SERVER
+Exercise 11 of 13
 
-Write a program that accepts one or more numbers as command-line arguments and prints the sum of those numbers to the console (stdout).
+Write an HTTP server that serves the same text file for each request it receives.
+
+Your server should listen on the port provided by the first argument to your program.
+
+You will be provided with the location of the file to serve as the second command-line argument. You must use the fs.createReadStream() method to stream the file contents to the response.
 
 -------------------------------------------------------------------------------
 
 ## HINTS
 
-You can access command-line arguments via the global process object. The process object has an argv property which is an array containing the complete command-line. i.e. process.argv.
+Because we need to create an HTTP server for this exercise rather than a generic TCP server, we should use the http module from Node core. Like the net module, http also has a method named http.createServer() but this one creates a server that can talk HTTP.
 
-To get started, write a program that simply contains:
+http.createServer() takes a callback that is called once for each connection received by your server. The callback function has the signature:
 
-   console.log(process.argv)
+   function callback (request, response) { /* ... */ }
 
-Run it with node program.js and some numbers as arguments. e.g:
+Where the two arguments are objects representing the HTTP request and the corresponding response for this request. request is used to fetch properties, such as the header and query-string from the request while response is for sending data to the client, both headers and body.
 
-   $ node program.js 1 2 3
+Both request and response are also Node streams! Which means that you can use the streaming abstractions to send and receive data if they suit your use-case.
 
-In which case the output would be an array looking something like:
+http.createServer() also returns an instance of your server. You must call server.listen(portNumber) to start listening on a particular port.
 
-   [ 'node', '/path/to/your/program.js', '1', '2', '3' ]
+A typical Node HTTP server looks like this:
 
-You'll need to think about how to loop through the number arguments so  you can output just their sum. The first element of the process.argv array is always 'node', and the second element is always the path to your program.js file, so you need to start at the 3rd element (index 2), adding each item to the total until you reach the end of the array.
+   var http = require('http')
+   var server = http.createServer(function (req, res) {
+     // request handling logic...
+   })
+   server.listen(8000)
 
-Also be aware that all elements of process.argv are strings and you may need to coerce them into numbers. You can do this by prefixing the property with + or passing it to Number(). e.g. +process.argv[2] or Number(process.argv[2]).
+Documentation on the http module can be found by pointing your browser here:
+ file:///usr/local/lib/node_modules/learnyounode/node_apidoc/http.html
+
+The fs core module also has some streaming APIs for files. You will need to use the fs.createReadStream() method to create a stream representing the file you are given as a command-line argument. The method returns a stream object which you can use src.pipe(dst) to pipe the data from the src stream to the dst stream. In this way you can connect a filesystem stream with an HTTP response stream.
+
+-------------------------------------------------------------------------------

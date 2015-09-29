@@ -1,7 +1,7 @@
 var fs = require('fs')
 var myArgs = process.argv.slice(2);
 //console.log('myArgs: ', myArgs);
-if (myArgs.length != 2) throw 'Worng arguments!!!';
+if (myArgs.length != 2) throw 'Wrong arguments!!!';
 fs.readdir(myArgs[0], function (err, list) {
     var result;
     if (err) throw err;
